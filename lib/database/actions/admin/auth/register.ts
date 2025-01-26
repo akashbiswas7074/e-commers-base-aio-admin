@@ -1,30 +1,23 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/database/connect";
-import Vendor from "@/lib/database/models/vendor.model";
+import Admin from "@/lib/database/models/admin.model";
 import { cookies } from "next/headers";
 const bcrypt = require("bcrypt");
 
-export const registerVendor = async (
-  name: string,
-  email: string,
-  password: string,
-  address: string,
-  phoneNumber: number,
-  zipCode: number
-) => {
+export const registerAdmin = async (email: string, password: string) => {
   try {
     await connectToDatabase();
-    if (!name || !email || !password || !address || !phoneNumber || !zipCode) {
+    if (!email || !password) {
       return {
         message: "Please fill in all fields",
         success: false,
       };
     }
-    const existingVendor = await Vendor.findOne({ email });
-    if (existingVendor) {
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
       return {
-        message: "Vendor already exists.",
+        message: "Admin already exists.",
         success: false,
       };
     }
@@ -34,29 +27,25 @@ export const registerVendor = async (
         success: false,
       };
     }
-    const cryptedPassword = await bcrypt.hash(password, 12);
-    const vendor = await new Vendor({
-      name,
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const admin = await new Admin({
       email,
-      password: cryptedPassword,
-      address,
-      phoneNumber,
-      zipCode,
+      password: hashedPassword,
     }).save();
 
-    // Call the `getJWTToken` method on the saved `vendor`
-    const token = vendor.getJWTToken();
+    // Call the getJWTToken method on the saved admin
+    const token = admin.getJWTToken();
 
     const cookieStore = await cookies();
-    cookieStore.set("vendor_token", token, {
+    cookieStore.set("admin_token", token, {
       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: true,
     });
 
     return {
-      message: "Successfully registered new vendor.",
-      vendor: JSON.parse(JSON.stringify(vendor)),
+      message: "Successfully registered new admin.",
+      admin: JSON.parse(JSON.stringify(admin)),
       success: true,
     };
   } catch (error: any) {

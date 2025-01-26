@@ -2,9 +2,7 @@
 import React, { useState } from "react";
 import {
   Button,
-  NumberInput,
   PasswordInput,
-  Textarea,
   TextInput,
   Notification,
   LoadingOverlay,
@@ -13,7 +11,7 @@ import {
 import { hasLength, isEmail, useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
-import { loginVendor } from "@/lib/database/actions/admin/auth/login";
+import { loginAdmin } from "@/lib/database/actions/admin/auth/login"; // Adjusted function name for clarity
 
 const SignInPage = () => {
   const form = useForm({
@@ -29,6 +27,7 @@ const SignInPage = () => {
       ),
     },
   });
+
   const [successMessage, setSuccessMessage] = useState(false);
   const [failureMessage, setFailureMessage] = useState<{
     visible: boolean;
@@ -36,16 +35,17 @@ const SignInPage = () => {
   }>({ visible: false, message: "" });
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+
   const handleSubmit = async (values: typeof form.values) => {
     try {
       setLoading(true);
-      await loginVendor(values.email, values.password)
+      await loginAdmin(values.email, values.password) // Calling the admin-specific function
         .then((res) => {
           if (res?.success) {
             setSuccessMessage(true);
             setFailureMessage({ visible: false, message: "" });
             setTimeout(() => {
-              router.push("/vendor/dashboard");
+              router.push("/admin/dashboard");
             }, 3000);
           } else if (!res?.success) {
             setSuccessMessage(false);
@@ -56,7 +56,7 @@ const SignInPage = () => {
           setFailureMessage({ visible: true, message: err.toString() });
         });
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -67,14 +67,14 @@ const SignInPage = () => {
       <Navbar />
       <div className="flex justify-center">
         <div className="">
-          <h1 className="text-3xl font-bold">Sign In</h1>
+          <h1 className="text-3xl font-bold">Admin Sign In</h1>
           {failureMessage.visible && (
             <Notification color="red" title="Error!" mt={"md"}>
               {failureMessage.message}
             </Notification>
           )}
           {successMessage && (
-            <Notification color="teal" title="Successfully logged in" mt={"md"}>
+            <Notification color="teal" title="Successfully Logged In" mt={"md"}>
               You&apos;re being redirected to the dashboard
             </Notification>
           )}
@@ -108,7 +108,7 @@ const SignInPage = () => {
               />
 
               <Button type="submit" mt={"md"}>
-                {loading ? "Loading..." : "Submit"}
+                {loading ? "Loading..." : "Sign In"}
               </Button>
             </form>
           </Box>

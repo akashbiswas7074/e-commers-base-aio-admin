@@ -1,10 +1,10 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/database/connect";
-import Vendor from "@/lib/database/models/vendor.model";
+import Admin from "@/lib/database/models/admin.model";
 import { cookies } from "next/headers";
 
-export const loginVendor = async (email: string, password: string) => {
+export const loginAdmin = async (email: string, password: string) => {
   try {
     await connectToDatabase();
     if (!email || !password) {
@@ -13,34 +13,38 @@ export const loginVendor = async (email: string, password: string) => {
         success: false,
       };
     }
-    const vendor = await Vendor.findOne({ email }).select("+password");
-    if (!vendor) {
+    const admin = await Admin.findOne({ email }).select("+password");
+    if (!admin) {
       return {
-        message: "Vendor does'nt exits.",
+        message: "Admin doesn't exist.",
         success: false,
       };
     }
-    const isPasswordValid = await vendor.comparePassword(password);
+    const isPasswordValid = await admin.comparePassword(password);
     if (!isPasswordValid) {
       return {
         message: "Password is incorrect.",
         success: false,
       };
     }
-    const token = vendor.getJWTToken();
+    const token = admin.getJWTToken();
     const cookieStore = await cookies();
-    cookieStore.set("vendor_token", token, {
+    cookieStore.set("admin_token", token, {
       expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
       httpOnly: true,
       secure: true,
     });
     return {
       message: "Login Successful.",
-      vendor: JSON.parse(JSON.stringify(vendor)),
+      admin: JSON.parse(JSON.stringify(admin)),
       token,
       success: true,
     };
   } catch (error: any) {
     console.log(error);
+    return {
+      message: "An error occurred during login.",
+      success: false,
+    };
   }
 };

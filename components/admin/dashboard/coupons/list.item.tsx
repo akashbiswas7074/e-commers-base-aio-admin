@@ -5,11 +5,11 @@ import { useForm } from "@mantine/form";
 import { AiFillDelete, AiTwotoneEdit } from "react-icons/ai";
 import { modals } from "@mantine/modals";
 
-import { getVendorCookiesandFetchVendor } from "@/lib/database/actions/admin/vendor.actions";
 import {
   deleteCoupon,
   updateCoupon,
 } from "@/lib/database/actions/admin/coupon/coupon.actions";
+import { getAdminCookiesandFetchAdmin } from "@/lib/database/actions/admin/admin.actions";
 
 const CouponListItem = ({
   coupon,
@@ -18,16 +18,13 @@ const CouponListItem = ({
   coupon: any;
   setCoupons: any;
 }) => {
-  const [vendorId, setVendorId] = useState("");
-
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     try {
       const fetchVendorDetails = async () => {
         try {
-          await getVendorCookiesandFetchVendor().then((res) => {
+          await getAdminCookiesandFetchAdmin().then((res) => {
             if (res.success) {
-              setVendorId(res.vendor._id);
               setLoading(false);
             }
           });
@@ -77,7 +74,7 @@ const CouponListItem = ({
   });
   const handleRemoveCoupon = async (couponId: string) => {
     try {
-      await deleteCoupon(couponId, vendorId)
+      await deleteCoupon(couponId)
         .then((res) => {
           if (res?.success) {
             setCoupons(res?.coupons);
@@ -93,7 +90,7 @@ const CouponListItem = ({
     try {
       const { name, discount, dateRange } = form.values;
       const [startDate, endDate] = dateRange;
-      await updateCoupon(name, couponId, discount, startDate, endDate, vendorId)
+      await updateCoupon(name, couponId, discount, startDate, endDate)
         .then((res) => {
           if (res?.success) {
             setCoupons(res?.coupons);

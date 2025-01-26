@@ -211,7 +211,7 @@ export const getSingleProductById = async (
         description: product.description,
         longDescription: product.longDescription,
         slug: product.slug,
-        sku: product.subProducts[style].sku,
+        // sku: product.subProducts[style].sku,
         brand: product.brand,
         category: product.category,
         subCategories: product.subCategories,

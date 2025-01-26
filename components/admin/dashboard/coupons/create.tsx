@@ -12,8 +12,8 @@ import {
 } from "@mantine/core";
 import "@mantine/dates/styles.css";
 import { DatePicker } from "@mantine/dates";
-import { getVendorCookiesandFetchVendor } from "@/lib/database/actions/admin/vendor.actions";
 import { createCoupon } from "@/lib/database/actions/admin/coupon/coupon.actions";
+import { getAdminCookiesandFetchAdmin } from "@/lib/database/actions/admin/admin.actions";
 const CreateCoupon = ({ setCoupons }: { setCoupons: any }) => {
   const [vendor, setVendor] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,9 +21,9 @@ const CreateCoupon = ({ setCoupons }: { setCoupons: any }) => {
     try {
       const fetchVendorDetails = async () => {
         try {
-          await getVendorCookiesandFetchVendor().then((res) => {
+          await getAdminCookiesandFetchAdmin().then((res) => {
             if (res.success) {
-              setVendor(res.vendor);
+              setVendor(res.admin);
               setLoading(false);
             }
           });

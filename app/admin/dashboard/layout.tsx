@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import "../../globals.css";
 import "@mantine/core/styles.css";
 import {
@@ -21,14 +22,17 @@ import { VscGraph } from "react-icons/vsc";
 import { FaRegRectangleList, FaUsers } from "react-icons/fa6";
 import { ImUsers } from "react-icons/im";
 import Link from "next/link";
-import { ModalsProvider } from "@mantine/modals";
+import { modals, ModalsProvider } from "@mantine/modals";
 import Logo from "@/components/Logo";
+import { IoIosLogOut } from "react-icons/io";
+import { logout } from "@/lib/database/actions/admin/auth/logout";
 
 export default function DashboardLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure();
+  const router = useRouter();
 
   return (
     <MantineProvider>
@@ -69,7 +73,9 @@ export default function DashboardLayout({
             </Group>
           </AppShell.Header>
           <AppShell.Navbar p={"md"}>
-            <div>
+            <div className="h-full overflow-y-auto">
+              {" "}
+              {/* Adjust height as needed */}
               <div className="flex gap-[30px] items-center p-[10px] rounded-md hover:bg-blue-100">
                 <Link href={"/admin/dashboard"}>
                   <MdSpaceDashboard size={20} />
@@ -84,6 +90,14 @@ export default function DashboardLayout({
                 </Link>
                 <Link href={"/admin/dashboard/users"}>
                   <div className="">Users</div>
+                </Link>
+              </div>
+              <div className="flex gap-[30px] items-center p-[10px] rounded-md hover:bg-blue-100">
+                <Link href={"/admin/dashboard/admins"}>
+                  <ImUsers size={20} />
+                </Link>
+                <Link href={"/admin/dashboard/admins"}>
+                  <div className="">Admins</div>
                 </Link>
               </div>
               <div className="flex gap-[30px] items-center p-[10px] rounded-md hover:bg-blue-100">
@@ -173,6 +187,35 @@ export default function DashboardLayout({
                 <Link href={"/admin/dashboard/banners/app"}>
                   <div className="">App Banners</div>
                 </Link>
+              </div>
+              <div
+                onClick={() => {
+                  modals.openConfirmModal({
+                    title: "Logout",
+                    centered: true,
+                    children: <Text size="sm">Do you want to log out?</Text>,
+                    labels: {
+                      confirm: "Yes, Logout",
+                      cancel: "Cancel",
+                    },
+                    confirmProps: { color: "red" },
+                    onCancel: () => console.log("Cancel"),
+                    onConfirm: async () => {
+                      try {
+                        const response = await logout(); // Call the logout function
+                        if (response?.message === "Successfully logged out!") {
+                          router.push("/"); // Navigate to home after successful logout
+                        }
+                      } catch (error) {
+                        console.error("Logout error:", error);
+                      }
+                    },
+                  });
+                }}
+                className="cursor-pointer flex gap-[30px] items-center p-[10px] rounded-md hover:bg-blue-100 "
+              >
+                <IoIosLogOut size={20} />
+                <div className="">Logout</div>
               </div>
             </div>
           </AppShell.Navbar>

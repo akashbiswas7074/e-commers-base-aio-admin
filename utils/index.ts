@@ -5,8 +5,8 @@ import mongoose from "mongoose";
 export const verify_vendor = async () => {
   try {
     const nextCookies = await cookies();
-    const vendor_token = nextCookies.get("vendor_token");
-    const decode = jwt.verify(vendor_token?.value, process.env.JWT_SECRET);
+    const admin_token = nextCookies.get("admin_token");
+    const decode = jwt.verify(admin_token?.value, process.env.JWT_SECRET);
     const { ObjectId } = mongoose.Types;
     const vendorObjectId = new ObjectId(decode.id);
     return { id: vendorObjectId };

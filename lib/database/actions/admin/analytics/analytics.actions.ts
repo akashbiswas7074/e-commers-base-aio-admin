@@ -58,7 +58,8 @@ export const sizeAnalytics = async () => {
           });
         });
         return acc;
-      }
+      },
+      {}
     );
     const sizeData = Object.keys(individualSizeAnalytics).map((size) => ({
       name: size,

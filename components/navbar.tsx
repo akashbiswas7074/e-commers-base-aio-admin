@@ -3,49 +3,57 @@ import { Button, Group } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { logout } from "@/lib/database/actions/admin/auth/logout";
 import { useEffect, useState } from "react";
-import { getVendorCookiesandFetchVendor } from "@/lib/database/actions/admin/vendor.actions";
+import { getAdminCookiesandFetchAdmin } from "@/lib/database/actions/admin/admin.actions";
 
 import React from "react";
 import Logo from "./Logo";
 
 const Navbar = () => {
-  const [vendor, setVendor] = useState<any>(null);
+  const [admin, setAdmin] = useState<any>(null);
   const router = useRouter();
+
   useEffect(() => {
-    try {
-      const fetchVendorDetails = async () => {
-        try {
-          await getVendorCookiesandFetchVendor().then((res) => {
-            if (res?.success) {
-              setVendor(res?.vendor);
-            }
-          });
-        } catch (error: any) {
-          console.log(error);
+    const fetchAdminDetails = async () => {
+      try {
+        const res = await getAdminCookiesandFetchAdmin();
+        if (res?.success) {
+          setAdmin(res?.admin);
         }
-      };
-      fetchVendorDetails();
-    } catch (error: any) {
-      console.log(error);
-    }
+      } catch (error: any) {
+        console.error("Error fetching admin details:", error);
+      }
+    };
+    fetchAdminDetails();
   }, []);
+
   return (
     <header className="p-[1rem] border-b-[1px] border-b-[#eaeaea]">
       <nav className="flex justify-between items-center">
         <Logo />
         <Group>
-          {vendor && vendor.name ? (
+          {admin && admin.email ? (
             <div className="flex gap-[10px]">
               <Button
                 variant="outline"
                 onClick={() => router.push("/admin/dashboard")}
               >
-                Vendor Dashboard
+                Admin Dashboard
               </Button>
               <Button
-                onClick={() => {
-                  logout();
-                  router.refresh();
+                onClick={async () => {
+                  try {
+                    const response = await logout(); // Call the logout function
+                    if (response?.message === "Successfully logged out!") {
+                      router.push("/"); // Navigate to home after successful logout
+                    } else {
+                      console.error(
+                        "Logout failed:",
+                        response?.message || "Unknown error"
+                      );
+                    }
+                  } catch (error) {
+                    console.error("Logout error:", error);
+                  }
                 }}
               >
                 Logout

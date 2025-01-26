@@ -19,28 +19,17 @@ const adminSchema = new mongoose.Schema({
   },
 });
 
-// Sign in admin with JWT
-adminSchema.methods.getJWTToken = function (): string {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET as string, {
+adminSchema.methods.getJWTToken = function () {
+  console.log(process.env.JWT_SECRET);
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: "5d",
   });
 };
+// comparing the password for vendor
 
-// Compare password for admin
-adminSchema.methods.comparePassword = async function (
-  enteredPassword: string
-): Promise<boolean> {
+adminSchema.methods.comparePassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
-// Hash password before saving to the database
-adminSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    return next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
 
 const Admin = mongoose.models.Admin || mongoose.model("Admin", adminSchema);
 export default Admin;

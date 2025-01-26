@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "extends": [
     "next/core-web-vitals",
     "next/typescript"
@@ -9,4 +10,7 @@
   "rules": {
     "@typescript-eslint/no-unused-expressions": ["error", { "allowShortCircuit": true }]
   }
+=======
+  "extends": ["next/core-web-vitals", "next/typescript"]
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
 }

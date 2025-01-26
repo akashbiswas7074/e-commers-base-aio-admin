@@ -1,9 +1,15 @@
 "use server";
 import mongoose from "mongoose";
 import Vendor from "../../models/vendor.model";
+<<<<<<< HEAD
 import { connectToDatabase } from "../../connect";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+=======
+import { connectToDatabase } from "./../../connect";
+import { cookies } from "next/headers";
+const jwt = require("jsonwebtoken");
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
 const { ObjectId } = mongoose.Types;
 
 // get vendor cookies for vendor
@@ -17,6 +23,7 @@ export const getVendorCookiesandFetchVendor = async () => {
       success: false,
     };
   }
+<<<<<<< HEAD
   if (!vendor_token?.value) {
     return {
       message: "Vendor token is invalid!",
@@ -28,6 +35,9 @@ export const getVendorCookiesandFetchVendor = async () => {
     throw new Error("JWT_SECRET is not defined");
   }
   const decode = jwt.verify(vendor_token.value, process.env.JWT_SECRET) as jwt.JwtPayload;
+=======
+  const decode = jwt.verify(vendor_token?.value, process.env.JWT_SECRET);
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
   await connectToDatabase();
   const vendor = await Vendor.findById(decode.id);
   if (!vendor) {
@@ -64,7 +74,11 @@ export const getSingleVendor = async (vendorId: string) => {
       message: "Successfully vendor found",
       vendor,
     };
+<<<<<<< HEAD
   } catch (error: unknown) {
+=======
+  } catch (error: any) {
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
     console.log(error);
   }
 };
@@ -86,7 +100,11 @@ export const checkVendor = async (vendorId: string) => {
       message: "Vendor found",
       success: true,
     };
+<<<<<<< HEAD
   } catch (error: unknown) {
+=======
+  } catch (error: any) {
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
     console.log(error);
   }
 };
@@ -116,7 +134,11 @@ export const checkVendorVerified = async (vendorId: string) => {
         success: false,
       };
     }
+<<<<<<< HEAD
   } catch (error: unknown) {
+=======
+  } catch (error: any) {
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
     console.log(error);
   }
 };
@@ -127,7 +149,11 @@ export async function getAllVendors() {
     await connectToDatabase();
     const vendors = await Vendor.find().sort({ createdAt: -1 }).lean();
     return JSON.parse(JSON.stringify(vendors));
+<<<<<<< HEAD
   } catch (error: unknown) {
+=======
+  } catch (error: any) {
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
     console.log(error);
   }
 }
@@ -152,7 +178,11 @@ export async function ChangeVerifyTagForVendor(
       message: "Successfully updated vendor",
       success: false,
     };
+<<<<<<< HEAD
   } catch (error: unknown) {
+=======
+  } catch (error: any) {
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
     console.log(error);
   }
 }

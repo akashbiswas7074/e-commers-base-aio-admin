@@ -12,9 +12,15 @@ cloudinary.v2.config({
   api_key: process.env.CLOUNDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_SECRET,
 });
+<<<<<<< HEAD
 const base64ToBuffer = (base: string): Buffer => {
   const base64String = base.split(";base64,").pop();
   return Buffer.from(base64String!, "base64");
+=======
+const base64ToBuffer = (base: any) => {
+  const base64String = base.split(";base64,").pop();
+  return Buffer.from(base64String, "base64");
+>>>>>>> 28d37c057b27d30a9479d13d5bba58c3984c68a6
 };
 
 // get all sub categories and categories for admin
